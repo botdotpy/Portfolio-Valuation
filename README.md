@@ -1,1 +1,1 @@
-This is a porfolio valuation project completed on a jupyter notebook.
+This is a stock porfolio valuation project completed on a jupyter notebook.
