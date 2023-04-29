@@ -6,9 +6,12 @@ import pandas_datareader.data as pdr
 import matplotlib.pyplot as plt
 %matplotlib inline
 
+# set start and end date parameters for historical data
 
 start_date = pd.to_datetime('2020-01-01')
 end_date = pd.to_datetime('2022-12-31')
+
+#creating an empty dictionary to store historical key (stock_ticker) and pair (stock_data) values
 
 stocks = {}
 
@@ -17,8 +20,14 @@ stocks['AAPL'] = yf.download('AAPL', start=start_date, end=end_date)[['Adj Close
 stocks['MSFT'] = yf.download('MSFT', start=start_date, end=end_date)[['Adj Close']]
 stocks['ORCL'] = yf.download('ORCL', start=start_date, end=end_date)[['Adj Close']]
 
+#inspecting stock_ticker 'AMD'in the stocks dictionary 
+
 stocks['AMD'].head()
 
+#looping through the stock data to calculate normalized returns column for each stock
+
 for stock_ticker, stock_data in stocks.items():
-    first_adj_close = stocks[stock_data].iloc[0]['Adj Close']
-    stocks['Normalized Returns'] = stock_data['Adj Close'] / first_adj_close
+    adj_close = stock_data.get('Adj Close') #to directly get values from the adj close column in the dictionary 
+    if adj_close is not None: #prevents index to scaler value error from days where no adj close value exits for a stock_ticker. possibly from no trades within the specified period
+        first_adj_close = stocks[stock_data].iloc[0]['Adj Close'] #gets the first adj close value from each stock_ticker
+        stocks['Normalized Returns'] = stock_data['Adj Close'] / first_adj_close #divide each row by the first adj close value to be stored in a new 'normalized returns' column
