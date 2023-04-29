@@ -34,7 +34,11 @@ for stock_ticker, stock_data in stocks.items():
 
 #looping through the stocks dictionary to assign a weight of 0.25 to each stock_ticker to create an equal weighted portfolio       
 for stock_ticker, stock_data in stocks.items():
-    stocks['Allocation'] = stocks['Normalized Returns'] * 0.25        
+    stocks['Allocation'] = stocks['Normalized Returns'] * 0.25  
+    
+#looping through the stocks dictionary to assign a portfolio value of $10,000 to the each value in the allocation column
+for stock_ticker, stock_data in stock_items():
+stock_data['Position Value'] = stock_data['Allocation'] * 10000
         
         
         
