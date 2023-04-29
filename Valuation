@@ -31,3 +31,33 @@ for stock_ticker, stock_data in stocks.items():
     if adj_close is not None: #prevents index to scaler value error from days where no adj close value exits for a stock_ticker. possibly from no trades within the specified period
         first_adj_close = stocks[stock_data].iloc[0]['Adj Close'] #gets the first adj close value from each stock_ticker
         stocks['Normalized Returns'] = stock_data['Adj Close'] / first_adj_close #divide each row by the first adj close value to be stored in a new 'normalized returns' column
+
+#looping through the stocks dictionary to assign a weight of 0.25 to each stock_ticker to create an equal weighted portfolio       
+for stock_ticker, stock_data in stocks.items():
+    stocks['Allocation'] = stocks['Normalized Returns'] * 0.25        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
