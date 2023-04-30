@@ -40,8 +40,31 @@ for stock_ticker, stock_data in stocks.items():
 for stock_ticker, stock_data in stock_items():
 stock_data['Position Value'] = stock_data['Allocation'] * 10000
         
-        
-        
+   
+#inspect dictionary to check added columns
+
+stocks['MSFT'].head()
+
+#looping through the stocks dictionary to create a positional value dictionary for viewing performing 
+
+positional_value = {}
+
+for stock_ticker, stock_data in stocks.items():
+positional_value[stock_ticker] = stock_data['Positional Value'] #stores stock_data's positional value values in positional value dictonary
+
+#turning the dictionary into a dataframe to prepare values for plotting
+
+positional_value = pd.DataFrame(data=positional_value)
+
+#inspecting positional value dataframe
+
+positional_value['AAPL'].head()
+
+#adding a total column to detail positional value for all the stocks per day
+
+positional_value['Total'] = positional_value.sum(axis=1)
+
+
         
         
         
