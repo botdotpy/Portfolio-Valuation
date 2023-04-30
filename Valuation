@@ -64,12 +64,23 @@ positional_value['AAPL'].head()
 
 positional_value['Total'] = positional_value.sum(axis=1)
 
+#plotting the total value of all porfolio stocks with equal weight
+        
+plt.figure(figsize=(12,8)) #arguments for width and height
 
+plt.plot(positional_value['Total'])
+
+plt.title('Equally-Wieghted Portfolio Stock')
+plt.ylabel('Stock Total Value')
         
-        
-        
-        
-        
+#plotting the total value of each stock per day  
+
+plt.figure(figsize=(12,8)
+
+plt.plot(positional_value['Total'].iloc[:,0:4]) #plots the total value for stocks from column index 0 - 4
+
+plt.title('Equally-Wieghted Portfolio Stock')
+plt.ylabel('Total Value Per Stock')
         
         
         
