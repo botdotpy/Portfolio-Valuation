@@ -45,7 +45,7 @@ stock_data['Position Value'] = stock_data['Allocation'] * 10000
 
 stocks['MSFT'].head()
 
-#looping through the stocks dictionary to create a positional value dictionary for viewing performing 
+#looping through the stocks dictionary to create a positional value dictionary for viewing performance
 
 positional_value = {}
 
@@ -121,6 +121,94 @@ sharpe_ratio = mean_daily_return / std_daily_return #caculated by subtracting th
 
 sharpe_ratio_annualized = share_ratio * 252**0.5 #at least 252 trading days in a year and ^0.5 to find the square root
         
+
+#creating a stock_adj_close dictionary to store adj close values for each stock while looping through the stocks dictionary
+
+stock_adj_close = {}
+
+for stock_ticker, stock_data in stocks.items():
+stock_adj_close[stock_ticker] = stock_data['Adj Close']
+
+#creating a dataframe from the dictionary
+
+stock_adj_close = pd.DataFrame(data=stock_adj_close)
+
+stock_adj_close.head() #to inspect the data frame
+
+#creating dictionary to store adj close returns - a daily percentage change for each stock
+
+stock_returns = stock_adj_close.pct_change()
+
+
+#building a second portfolio with 10,000 scenarios with optmized (random) weight to determine the best returning asset adjusted for risk
+
+#using np.zeros to create 10,000 weights for 10,000 scenarios
+
+scenarios = 10000 #number of scenarios 
+
+weights_array = np.zeros((scenarios, len(stock_returns.columns))) #creates 10,000 0 weights using the len of columns in stock_returns
+
+
+#creating other arrays to store our scenario output
+
+retuns_array = np.zeros(scenarios)
+volatility_array = np.zeros(scenarios)
+sharpe_array = np.zeros(scenarios)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         
         
         
