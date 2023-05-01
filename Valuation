@@ -109,10 +109,17 @@ std_daily_return = position_values['Total'].std()
 
 print("The portfolio's mean daily return is: {:.2f}".format(std_daily_return))      
         
+#exploring Sharpe Ratio - a risk-adjusted metric that quantifies the expected return on an asset by a given level of risk
+#an assest with a higher sharpe ratio when comparing two assets, provides a higher return for the same amount of risk or same
+#return for a lower amount of risk
+
+sharpe_ratio = mean_daily_return / std_daily_return #caculated by subtracting the average portfolio return from a risk free rate and divide by the returns standard dev
+                                                    #assuming a rfr of 0 here   
+
         
-        
-        
-        
+#annualizing the sharpe ratio. which is according to the rule of thumb good enough to determine a profitable portfolio    
+
+sharpe_ratio_annualized = share_ratio * 252**0.5 #at least 252 trading days in a year and ^0.5 to find the square root
         
         
         
