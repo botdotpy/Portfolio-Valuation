@@ -155,6 +155,16 @@ retuns_array = np.zeros(scenarios)
 volatility_array = np.zeros(scenarios)
 sharpe_array = np.zeros(scenarios)
 
+#creating a randomly weighted portfolio
+
+import random
+random.seed(3)
+np.random.seed(3)
+
+#looping through each index in the range of scenarios to create output
+
+for index in range(scenarios):
+    numbers = np.array(np.random.random(4)) #populates each index with four random numbers in each scenario
 
 
 
