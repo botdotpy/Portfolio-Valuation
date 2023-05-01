@@ -83,13 +83,31 @@ plt.title('Equally-Wieghted Portfolio Stock')
 plt.ylabel('Total Value Per Stock')
         
         
+#introducing metrics to further measure the portfolio perfomance 
+
+#cummulative return - calculated by dividing the porfolio end value by the start value
+end_value = position_values['Total'][-1] - #derives the portfolio's last position value
+start_value = position_values['Total'][0] - #derives the portfolio's first position value
+        
+cummulative_return = (end_value / start_value) -1
+
+print("The portfolio's cummulative return is: {}".format(round(cummulative_value*100,2)) + "%") 
+       
+#daily return - calculated by the portfolio's daily simple returns
+position_values['Daily Return'] = position_values['Total'].pct_change()
         
         
-        
-        
-        
-        
-        
+#mean daily return - finds the portfolio's average daily return
+
+mean_daily_return = position_values['Total'].mean()
+
+print("The portfolio's mean daily return is: {:.2f}".format(mean_daily_return))
+
+#std daily return - finds the portfolio's average daily return
+
+std_daily_return = position_values['Total'].std()
+
+print("The portfolio's mean daily return is: {:.2f}".format(std_daily_return))      
         
         
         
