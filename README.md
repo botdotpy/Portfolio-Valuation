@@ -14,7 +14,13 @@ To build Portfolio B, the project creates a dictionary (later converted into a d
 
 A weights array is then created to model the dictionary shape storing the simple returns on adjusted close values.
 
-Thereafter, four random numbers are generated for each scenario in 10,000 scenarios, from which the weights array derives its random weighting; after dividing the sum of these numbers by their total 
+Thereafter, four random numbers are generated for each scenario in 10,000 scenarios, from which the weights array derives its random weighting; after dividing the sum of these numbers by their total.
+
+The project further creates a returns array, volatitility array and sharpe array which are poplulated with output values after calculation.
+
+Values such as the first combination of weights, the portfolio with the highest sharpe ratio from the simulation and the index of the said portfolio are printed out and displayed in a scatter plot; which plotted returns against volatility.
+
+Finally, the project derives the volaltility and return of the portfolio with the highest sharpe ratio - using its index, plotting these values to be reflected on the previous scatter plot but with a different hue and edge color for identification.
 
 
 
