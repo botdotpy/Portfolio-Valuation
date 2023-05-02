@@ -2,7 +2,7 @@
 
 import numpy as np
 import pandas as pd
-import pandas_datareader.data as pdr
+import yfinance as yf
 import matplotlib.pyplot as plt
 %matplotlib inline
 
@@ -37,8 +37,8 @@ for stock_ticker, stock_data in stocks.items():
     stocks['Allocation'] = stocks['Normalized Returns'] * 0.25  
     
 #looping through the stocks dictionary to assign a portfolio value of $10,000 to the each value in the allocation column
-for stock_ticker, stock_data in stock_items():
-stock_data['Position Value'] = stock_data['Allocation'] * 10000
+for stock_ticker, stock_data in stocks.items():
+    stock_data['Position Value'] = stock_data['Allocation'] * 10000
         
    
 #inspect dictionary to check added columns
@@ -47,37 +47,37 @@ stocks['MSFT'].head()
 
 #looping through the stocks dictionary to create a positional value dictionary for viewing performance
 
-positional_value = {}
+position_values = {}
 
 for stock_ticker, stock_data in stocks.items():
-positional_value[stock_ticker] = stock_data['Positional Value'] #stores stock_data's positional value values in positional value dictonary
+    position_values[stock_ticker] = stock_data['Positional Value'] #stores stock_data's positional value values in positional value dictonary
 
 #turning the dictionary into a dataframe to prepare values for plotting
 
-positional_value = pd.DataFrame(data=positional_value)
+position_values = pd.DataFrame(data=position_values)
 
 #inspecting positional value dataframe
 
-positional_value['AAPL'].head()
+position_values['AAPL'].head()
 
 #adding a total column to detail positional value for all the stocks per day
 
-positional_value['Total'] = positional_value.sum(axis=1)
+position_values['Total'] = position_values.sum(axis=1)
 
 #plotting the total value of all porfolio stocks with equal weight
         
 plt.figure(figsize=(12,8)) #arguments for width and height
 
-plt.plot(positional_value['Total'])
+plt.plot(position_values['Total'])
 
 plt.title('Equally-Wieghted Portfolio Stock')
 plt.ylabel('Stock Total Value')
         
 #plotting the total value of each stock per day  
 
-plt.figure(figsize=(12,8)
+plt.figure(figsize=(12,8))
 
-plt.plot(positional_value['Total'].iloc[:,0:4]) #plots the total value for stocks from column index 0 - 4
+plt.plot(position_values['Total'].iloc[:,0:4]) #plots the total value for stocks from column index 0 - 4
 
 plt.title('Equally-Wieghted Portfolio Stock')
 plt.ylabel('Total Value Per Stock')
@@ -86,12 +86,12 @@ plt.ylabel('Total Value Per Stock')
 #introducing metrics to further measure the portfolio perfomance 
 
 #cummulative return - calculated by dividing the porfolio end value by the start value
-end_value = position_values['Total'][-1] - #derives the portfolio's last position value
-start_value = position_values['Total'][0] - #derives the portfolio's first position value
+end_value = position_values['Total'][-1]  #derives the portfolio's last position value
+start_value = position_values['Total'][0]  #derives the portfolio's first position value
         
 cummulative_return = (end_value / start_value) -1
 
-print("The portfolio's cummulative return is: {}".format(round(cummulative_value*100,2)) + "%") 
+print("The portfolio's cummulative return is: {}".format(round(cummulative_return*100,2)) + "%") 
        
 #daily return - calculated by the portfolio's daily simple returns
 position_values['Daily Return'] = position_values['Total'].pct_change()
@@ -119,7 +119,7 @@ sharpe_ratio = mean_daily_return / std_daily_return #caculated by subtracting th
         
 #annualizing the sharpe ratio. which is according to the rule of thumb good enough to determine a profitable portfolio    
 
-sharpe_ratio_annualized = share_ratio * 252**0.5 #at least 252 trading days in a year and ^0.5 to find the square root
+sharpe_ratio_annualized = sharpe_ratio * 252**0.5 #at least 252 trading days in a year and ^0.5 to find the square root
         
 
 #creating a stock_adj_close dictionary to store adj close values for each stock while looping through the stocks dictionary
@@ -127,7 +127,7 @@ sharpe_ratio_annualized = share_ratio * 252**0.5 #at least 252 trading days in a
 stock_adj_close = {}
 
 for stock_ticker, stock_data in stocks.items():
-stock_adj_close[stock_ticker] = stock_data['Adj Close']
+    stock_adj_close[stock_ticker] = stock_data['Adj Close']
 
 #creating a dataframe from the dictionary
 
@@ -151,7 +151,7 @@ weights_array = np.zeros((scenarios, len(stock_returns.columns))) #creates 10,00
 
 #creating other arrays to store our scenario output
 
-retuns_array = np.zeros(scenarios)
+returns_array = np.zeros(scenarios)
 volatility_array = np.zeros(scenarios)
 sharpe_array = np.zeros(scenarios)
 
@@ -163,62 +163,65 @@ np.random.seed(3)
 
 #looping through each index in the range of scenarios to create output
 
-for index in range(scenarios):
-    numbers = np.array(np.random.random(4)) #populates each index with four random numbers in each scenario
+for index in range(scenarios): 
+    numbers = np.array(np.random.random(4)) #creates an array of four numbers between 0 - 1 in each scenario
+    
+    weights = numbers / np.sum(numbers) #divide each number by the total of numbers to assign a weight for each stock
+    
+    weights_array[index,:] = weights #assign the weights to the weights_array index for each scenario
+    
+    returns_array[index] = np.sum(stock_returns.mean()*252*weights)
+    
+    volatility_array[index] = np.sqrt(np.dot(weights.T,np.dot(stock_returns.cov()*252,weights)))
+    
+    sharpe_array[index] = returns_array[index] / volatility_array[index]
 
 
+#deriving the weight combination and sharpe ratio from the first portfolio scenario
+
+print("The weight combination from the first portfolio scenario is: {}".format(weights_array[0]))
+print("The sharpe ratio from the first portfolio scenario is: {}".format(sharpe_array[0]))
 
 
+#deriving the highest sharpe ratio from the scenarios and the index
+
+max_sharpe_ratio = sharpe_array.max()
+print(max_sharpe_ratio)
+
+index_max_sharpe = max_sharpe_ratio.argmax()
+print(index_max_sharpe)
+
+#display the optimal weight from the portfolio with the highest sharpe ratio
+
+stock_tickers = ['AMD', 'AAPL', 'MSFT', 'ORCL']
+
+print(stock_tickers)
+print(weights_array[index_max_sharpe,:])
+
+#visualizing the portfolio using a scatter chart that plots returns against volatility
+
+plt.figure(figsize=(12,8))
+
+plt.scatter(x=volatility_array, y=returns_array, c=sharpe_array, cmap='viridis')
+
+plt.colorbar(label='Sharpe Ratio')
+plt.xlabel('Volatility')
+plt.ylabel('Returns')
 
 
+#visualizing the portfolio using a scatter chart that plots returns against volatility; identifying the
+#highest sharpe return and highest sharpe volatility
 
+max_sharpe_volatility = volatility_array[index_max_sharpe]
+max_sharpe_return = returns_array[index_max_sharpe]
 
+plt.figure(figsize=(12,8))
 
+plt.scatter(x=volatility_array, y=returns_array, c=sharpe_array, cmap='viridis')
 
+plt.colorbar(label='Sharpe Ratio')
+plt.xlabel('Volatility')
+plt.ylabel('Returns')
 
+plt.scatter(x=max_sharpe_volatility, y=max_sharpe_return, c='orange', edgecolors='black')
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        
-        
-        
