@@ -11,9 +11,11 @@ import matplotlib.pyplot as plt
 start_date = pd.to_datetime('2020-01-01')
 end_date = pd.to_datetime('2022-12-31')
 
-#creating an empty dictionary to store historical key (stock_ticker) and pair (stock_data) values
+stock_list = ['AMD', 'AAPL', 'MSFT', 'ORCL'] 
 
-stocks = {}
+stocks = {} #creating an empty dictionary to store historical key (stock_ticker) and pair (stock_data) values
+
+#storing ajudsted close values for each stock ticker in keys
 
 stocks['AMD'] = yf.download('AMD', start=start_date, end=end_date)[['Adj Close']]
 stocks['AAPL'] = yf.download('AAPL', start=start_date, end=end_date)[['Adj Close']]
@@ -30,11 +32,11 @@ for stock_ticker, stock_data in stocks.items():
     adj_close = stock_data.get('Adj Close') #to directly get values from the adj close column in the dictionary 
     if adj_close is not None: #prevents index to scaler value error from days where no adj close value exits for a stock_ticker; possibly from no trades within the specified period
         first_adj_close = adj_close.iloc[0] #gets the first adj close value from each stock_ticker
-        stocks['Normalized Returns'] = stock_data['Adj Close'] / first_adj_close #divide each row by the first adj close value to be stored in a new 'normalized returns' column
+        stock_data['Normalized Returns'] = stock_data['Adj Close'] / first_adj_close #divide each row by the first adj close value to be stored in a new 'normalized returns' column
 
 #looping through the stocks dictionary to assign a weight of 0.25 to each stock_ticker to create an equal weighted portfolio       
 for stock_ticker, stock_data in stocks.items():
-    stocks['Allocation'] = stocks['Normalized Returns'] * 0.25  
+    stock_data['Allocation'] = stock_data['Normalized Returns'] * 0.25  
     
 #looping through the stocks dictionary to assign a portfolio value of $10,000 to the each value in the allocation column
 for stock_ticker, stock_data in stocks.items():
@@ -50,7 +52,7 @@ stocks['MSFT'].head()
 position_values = {}
 
 for stock_ticker, stock_data in stocks.items():
-    position_values[stock_ticker] = stock_data['Positional Value'] #stores stock_data's positional value values in positional value dictonary
+    position_values[stock_ticker] = stock_data['Position Value'] #stores stock_data's positional value values in positional value dictonary
 
 #turning the dictionary into a dataframe to prepare values for plotting
 
@@ -71,7 +73,7 @@ plt.figure(figsize=(12,8)) #arguments for width and height
 plt.plot(position_values['Total'])
 
 plt.title('Equally-Wieghted Portfolio Stock')
-plt.ylabel('Stock Total Value')
+plt.ylabel('Stock Total Value');
         
 #plotting the total value of each stock per day  
 
@@ -80,7 +82,7 @@ plt.figure(figsize=(12,8))
 plt.plot(position_values['Total'].iloc[:,0:4]) #plots the total value for stocks from column index 0 - 4
 
 plt.title('Equally-Wieghted Portfolio Stock')
-plt.ylabel('Total Value Per Stock')
+plt.ylabel('Total Value Per Stock');
         
         
 #introducing metrics to further measure the portfolio perfomance 
@@ -107,7 +109,7 @@ print("The portfolio's mean daily return is: {:.2f}".format(mean_daily_return))
 
 std_daily_return = position_values['Total'].std()
 
-print("The portfolio's mean daily return is: {:.2f}".format(std_daily_return))      
+print("The portfolio's std daily return is: {:.2f}".format(std_daily_return))      
         
 #exploring Sharpe Ratio - a risk-adjusted metric that quantifies the expected return on an asset by a given level of risk
 #an assest with a higher sharpe ratio when comparing two assets, provides a higher return for the same amount of risk or same
@@ -193,9 +195,7 @@ print(index_max_sharpe)
 
 #display the optimal weight from the portfolio with the highest sharpe ratio
 
-stock_tickers = ['AMD', 'AAPL', 'MSFT', 'ORCL']
-
-print(stock_tickers)
+print(stock_list)
 print(weights_array[index_max_sharpe,:])
 
 #visualizing the portfolio using a scatter chart that plots returns against volatility
@@ -224,4 +224,3 @@ plt.xlabel('Volatility')
 plt.ylabel('Returns')
 
 plt.scatter(x=max_sharpe_volatility, y=max_sharpe_return, c='orange', edgecolors='black')
-
